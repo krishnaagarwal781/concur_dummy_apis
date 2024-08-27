@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional, List
 from bson import ObjectId
 
@@ -53,14 +53,37 @@ class ConsentHistory(BaseModel):
 # Collection point management models
 class CollectionPoint(BaseModel):
     name: str
-    description: Optional[str]
-    status: str = "draft"  # draft, published, unpublished
+    description: Optional[str] = None
+    status: str = "inactive"  # e.g., "active", "inactive", "published", "unpublished"
+    data_format: Optional[str] = None
 
 
 class UpdateCollectionPoint(BaseModel):
     name: Optional[str]
     description: Optional[str]
-    status: Optional[str]
+    status: Optional[str]  # e.g., "active", "inactive", "published", "unpublished"
+    data_format: Optional[str]
+
+
+class CollectionPointInsights(BaseModel):
+    point_id: str
+    metrics: Dict[str, int]  # Metrics related to performance and usage
+
+
+class ExportCollectionPointData(BaseModel):
+    point_id: str
+    format: str  # e.g., "json", "csv"
+
+
+class ImportCollectionPointData(BaseModel):
+    format: str  # e.g., "json", "csv"
+    data: dict  # Data to import
+
+
+class AuditCollectionPoint(BaseModel):
+    point_id: str
+    audit_result: str
+    compliance_status: str
 
 
 # Persona management models
@@ -89,15 +112,37 @@ class UpdateDataPrincipal(BaseModel):
 
 # Model notice management models
 class ModelNotice(BaseModel):
-    template_name: str
+    title: str
     content: str
-    status: str = "draft"  # draft, published, unpublished
+    status: str = "draft"  # e.g., "draft", "published", "unpublished"
+    language: Optional[str] = None
 
 
 class UpdateModelNotice(BaseModel):
-    template_name: Optional[str]
+    title: Optional[str]
     content: Optional[str]
-    status: Optional[str]
+    status: Optional[str]  # e.g., "draft", "published", "unpublished"
+    language: Optional[str]
+
+
+class ModelNoticeInsights(BaseModel):
+    template_id: str
+    metrics: Dict[str, int]  # Insights related to usage and effectiveness
+
+
+class ExportModelNotice(BaseModel):
+    template_id: str
+    format: str  # e.g., "pdf", "json"
+
+
+class ImportModelNotice(BaseModel):
+    format: str  # e.g., "pdf", "json"
+    data: dict  # Data to import
+
+
+class SearchModelNotice(BaseModel):
+    query: str
+    filters: Optional[Dict[str, str]]  # Filters for search criteria
 
 
 class DataSource(BaseModel):
@@ -209,3 +254,54 @@ class ClassificationAudit(BaseModel):
     classification_id: str
     audit_date: str
     audit_result: str
+
+
+class ModelNoticeWorkflow(BaseModel):
+    name: str
+    description: Optional[str] = None
+    steps: Dict[str, str]  # Steps and their descriptions in the workflow
+    status: str = "draft"  # e.g., "draft", "published"
+
+
+class UpdateModelNoticeWorkflow(BaseModel):
+    name: Optional[str]
+    description: Optional[str]
+    steps: Optional[Dict[str, str]]
+    status: Optional[str]  # e.g., "draft", "published"
+
+
+class ModelNoticeWorkflowInsights(BaseModel):
+    workflow_id: str
+    metrics: Dict[str, int]  # Insights related to usage and performance
+
+
+class AuditModelNoticeWorkflow(BaseModel):
+    workflow_id: str
+    analysis: Dict[str, str]  # Analysis details, such as cost evaluation
+
+class Campaign(BaseModel):
+    name: str
+    description: Optional[str] = None
+    status: str = "draft"  # e.g., "draft", "published"
+    schedule_time: Optional[datetime] = None  # Time to schedule the campaign
+
+class UpdateCampaign(BaseModel):
+    name: Optional[str]
+    description: Optional[str]
+    status: Optional[str]  # e.g., "draft", "published"
+    schedule_time: Optional[datetime]
+
+class CampaignAnalytics(BaseModel):
+    campaign_id: str
+    metrics: Dict[str, int]  # Metrics related to campaign performance
+
+class CampaignInsights(BaseModel):
+    campaign_id: str
+    insights: Dict[str, str]  # Detailed insights and metrics
+
+class ExportCampaignData(BaseModel):
+    campaign_id: str
+    format: str  # e.g., "CSV", "JSON"
+
+class ImportCampaignData(BaseModel):
+    data: Dict  # The data to import
