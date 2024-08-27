@@ -3,16 +3,12 @@ from typing import List, Optional
 from models.models import Credentials, UpdateCredentials
 from config.database import db
 from bson import ObjectId
-from cryptography.fernet import Fernet
 import base64
 import json
 import io
 
 credential_router = APIRouter()
 
-# Secret key for encryption (for demonstration purposes only; should be securely managed)
-ENCRYPTION_KEY = base64.urlsafe_b64encode(b"your-secret-key-here")
-cipher_suite = Fernet(ENCRYPTION_KEY)
 
 @credential_router.post("/create-credentials", tags=["Credentials Management"])
 async def create_credentials(credentials: Credentials):

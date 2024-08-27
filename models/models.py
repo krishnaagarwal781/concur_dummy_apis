@@ -1,5 +1,5 @@
-from pydantic import BaseModel, Field
-from typing import Optional, List
+from pydantic import BaseModel
+from typing import Optional, List, Dict
 from bson import ObjectId
 from datetime import datetime
 
@@ -416,7 +416,7 @@ class ProgressiveConsentAudit(BaseModel):
 class DataPrincipal(BaseModel):
     id: str
     name: str
-    email: EmailStr
+    email: str
     phone: Optional[str]
 
 
@@ -431,7 +431,7 @@ class UserPreference(BaseModel):
 
 class PreferenceHistory(BaseModel):
     user_id: str
-    changes: List[Dict[str, any]]  # List of changes with timestamps
+    changes: List[dict]  # List of changes with timestamps
 
 
 class ConsentArtifact(BaseModel):
@@ -442,7 +442,7 @@ class ConsentArtifact(BaseModel):
 class PreferenceDataExport(BaseModel):
     user_id: str
     export_format: str  # CSV, JSON, etc.
-    data: List[Dict[str, any]]
+    data: List[dict]
 
 
 class DPARRequest(BaseModel):
@@ -464,7 +464,7 @@ class DPARStatusDashboard(BaseModel):
 
 class DPDataExport(BaseModel):
     user_id: str
-    data: Dict[str, any]  # Data to be exported
+    data: dict  # Data to be exported
 
 
 class VerifyEmailResponse(BaseModel):
@@ -491,7 +491,7 @@ class ReKYCRequest(BaseModel):
 class DataUpdateRequest(BaseModel):
     request_id: str
     user_id: str
-    data: Dict[str, any]
+    data: dict
     status: str  # e.g., "pending", "approved", "rejected"
     requested_at: datetime
     processed_at: Optional[datetime]
@@ -518,7 +518,7 @@ class DPOAudit(BaseModel):
     action_type: str  # e.g., "approve", "reject", "update"
     performed_by: str
     timestamp: datetime
-    details: Dict[str, any]
+    details: dict
 
 
 class DPOComplianceReport(BaseModel):
@@ -534,6 +534,7 @@ class DPOFeedback(BaseModel):
     feedback_text: str
     submitted_at: datetime
 
+
 class BreachTemplate(BaseModel):
     template_id: str
     title: str
@@ -542,6 +543,7 @@ class BreachTemplate(BaseModel):
     created_at: datetime
     updated_at: Optional[datetime]
 
+
 class BreachIncident(BaseModel):
     incident_id: str
     title: str
@@ -549,13 +551,15 @@ class BreachIncident(BaseModel):
     severity: str  # e.g., "low", "medium", "high"
     reported_at: datetime
     status: str  # e.g., "investigating", "resolved"
-    affected_data: List[Dict[str, any]]  # Details about affected data
+    affected_data: List[dict]  # Details about affected data
+
 
 class BreachNotificationArtifact(BaseModel):
     artifact_id: str
     title: str
     content: str
     published_at: Optional[datetime]
+
 
 class BreachNotification(BaseModel):
     notification_id: str
@@ -565,11 +569,26 @@ class BreachNotification(BaseModel):
     message: str
     sent_at: Optional[datetime]
 
+
 class DataBreachInvestigation(BaseModel):
     investigation_id: str
     incident_id: str
     investigator: str
-    findings: Dict[str, any]
+    findings: dict
     status: str  # e.g., "ongoing", "completed"
     started_at: datetime
     completed_at: Optional[datetime]
+
+
+class ScanProfile(BaseModel):
+    name: str
+    description: Optional[str] = None
+    settings: dict  # Scan profile settings (e.g., scan type, frequency, etc.)
+    status: str = "inactive"  # e.g., active, inactive, published, unpublished
+
+
+class UpdateScanProfile(BaseModel):
+    name: Optional[str]
+    description: Optional[str]
+    settings: Optional[dict]
+    status: Optional[str]
