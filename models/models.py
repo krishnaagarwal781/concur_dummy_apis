@@ -416,7 +416,8 @@ class ProgressiveConsentAudit(BaseModel):
 class DataPrincipal(BaseModel):
     id: str
     name: str
-    email: str
+    email: EmailStr
+    phone: Optional[str]
 
 
 class UserPreference(BaseModel):
@@ -442,3 +443,133 @@ class PreferenceDataExport(BaseModel):
     user_id: str
     export_format: str  # CSV, JSON, etc.
     data: List[Dict[str, any]]
+
+
+class DPARRequest(BaseModel):
+    request_id: str
+    user_id: str
+    request_type: str  # e.g., "data_access", "data_deletion"
+    status: str  # e.g., "pending", "approved", "rejected"
+    requested_at: datetime
+    processed_at: Optional[datetime]
+    documents: Optional[List[str]]  # Document IDs or URLs
+
+
+class DPARStatusDashboard(BaseModel):
+    total_requests: int
+    pending_requests: int
+    approved_requests: int
+    rejected_requests: int
+
+
+class DPDataExport(BaseModel):
+    user_id: str
+    data: Dict[str, any]  # Data to be exported
+
+
+class VerifyEmailResponse(BaseModel):
+    verified: bool
+    message: str
+
+
+class VerifyMobileResponse(BaseModel):
+    verified: bool
+    message: str
+
+
+class VerifyKYCResponse(BaseModel):
+    verified: bool
+    message: str
+
+
+class ReKYCRequest(BaseModel):
+    user_id: str
+    reason: str
+    requested_at: datetime
+
+
+class DataUpdateRequest(BaseModel):
+    request_id: str
+    user_id: str
+    data: Dict[str, any]
+    status: str  # e.g., "pending", "approved", "rejected"
+    requested_at: datetime
+    processed_at: Optional[datetime]
+
+
+class DataDeletionRequest(BaseModel):
+    request_id: str
+    user_id: str
+    reason: str
+    status: str  # e.g., "pending", "approved", "rejected"
+    requested_at: datetime
+    processed_at: Optional[datetime]
+
+
+class DPOAssignment(BaseModel):
+    task_id: str
+    dpo_id: str
+    task_description: str
+    status: str  # e.g., "assigned", "in-progress", "completed"
+
+
+class DPOAudit(BaseModel):
+    action_id: str
+    action_type: str  # e.g., "approve", "reject", "update"
+    performed_by: str
+    timestamp: datetime
+    details: Dict[str, any]
+
+
+class DPOComplianceReport(BaseModel):
+    total_requests: int
+    total_approved: int
+    total_rejected: int
+    compliance_percentage: float
+
+
+class DPOFeedback(BaseModel):
+    feedback_id: str
+    user_id: str
+    feedback_text: str
+    submitted_at: datetime
+
+class BreachTemplate(BaseModel):
+    template_id: str
+    title: str
+    description: str
+    content: str
+    created_at: datetime
+    updated_at: Optional[datetime]
+
+class BreachIncident(BaseModel):
+    incident_id: str
+    title: str
+    description: str
+    severity: str  # e.g., "low", "medium", "high"
+    reported_at: datetime
+    status: str  # e.g., "investigating", "resolved"
+    affected_data: List[Dict[str, any]]  # Details about affected data
+
+class BreachNotificationArtifact(BaseModel):
+    artifact_id: str
+    title: str
+    content: str
+    published_at: Optional[datetime]
+
+class BreachNotification(BaseModel):
+    notification_id: str
+    incident_id: str
+    recipients: List[str]
+    subject: str
+    message: str
+    sent_at: Optional[datetime]
+
+class DataBreachInvestigation(BaseModel):
+    investigation_id: str
+    incident_id: str
+    investigator: str
+    findings: Dict[str, any]
+    status: str  # e.g., "ongoing", "completed"
+    started_at: datetime
+    completed_at: Optional[datetime]
