@@ -5,14 +5,49 @@ from bson import ObjectId
 
 class App(BaseModel):
     name: str
-    description: Optional[str]
-    status: str = "draft"  # draft, published, unpublished
+    description: Optional[str] = None
+    status: str = "inactive"  # e.g., "active", "inactive", "published", "unpublished"
+    consent_policy: Optional[str] = None
 
 
 class UpdateApp(BaseModel):
     name: Optional[str]
     description: Optional[str]
-    status: Optional[str]
+    status: Optional[str]  # e.g., "active", "inactive", "published", "unpublished"
+    consent_policy: Optional[str]
+
+
+class AppAnalytics(BaseModel):
+    app_id: str
+    usage_metrics: dict  # Metrics related to app usage
+    performance_metrics: dict  # Metrics related to app performance
+    user_interactions: dict  # Metrics related to user interactions
+
+
+class ConsentInsights(BaseModel):
+    app_id: str
+    consent_interactions: dict  # Insights related to user consent
+
+
+class ExportAppData(BaseModel):
+    app_id: str
+    format: str  # e.g., "json", "csv"
+
+
+class ImportAppData(BaseModel):
+    format: str  # e.g., "json", "csv"
+    data: dict  # Data to import
+
+
+class AuditApp(BaseModel):
+    app_id: str
+    audit_result: str
+    compliance_status: str
+
+
+class ConsentHistory(BaseModel):
+    app_id: str
+    consent_actions: List[dict]  # List of consent actions
 
 
 # Collection point management models
@@ -123,3 +158,54 @@ class UpdateDataCatalogue(BaseModel):
     entries: Optional[List[dict]]
     status: Optional[str]
     categories: Optional[List[str]]
+
+
+class DataElement(BaseModel):
+    name: str
+    description: Optional[str] = None
+    element_type: str
+    status: str = "inactive"
+    categories: Optional[List[str]] = None
+
+
+class UpdateDataElement(BaseModel):
+    name: Optional[str]
+    description: Optional[str]
+    element_type: Optional[str]
+    status: Optional[str]
+    categories: Optional[List[str]]
+
+
+class ClassificationTemplate(BaseModel):
+    name: str
+    description: Optional[str] = None
+    criteria: dict  # Define the criteria for this classification template
+
+
+class CountryTemplate(BaseModel):
+    country_code: str
+    country_name: str
+
+
+class CustomClassifier(BaseModel):
+    name: str
+    description: Optional[str] = None
+    rules: dict  # Define the rules for this custom classifier
+
+
+class UpdateCustomClassifier(BaseModel):
+    name: Optional[str]
+    description: Optional[str]
+    rules: Optional[dict]
+
+
+class ClassificationAssignment(BaseModel):
+    element_id: str
+    classification_id: str
+
+
+class ClassificationAudit(BaseModel):
+    element_id: str
+    classification_id: str
+    audit_date: str
+    audit_result: str
