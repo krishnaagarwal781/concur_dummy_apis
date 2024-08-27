@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 from typing import Optional, List
 from bson import ObjectId
+from datetime import datetime
 
 
 class App(BaseModel):
@@ -279,11 +280,13 @@ class AuditModelNoticeWorkflow(BaseModel):
     workflow_id: str
     analysis: Dict[str, str]  # Analysis details, such as cost evaluation
 
+
 class Campaign(BaseModel):
     name: str
     description: Optional[str] = None
     status: str = "draft"  # e.g., "draft", "published"
     schedule_time: Optional[datetime] = None  # Time to schedule the campaign
+
 
 class UpdateCampaign(BaseModel):
     name: Optional[str]
@@ -291,17 +294,151 @@ class UpdateCampaign(BaseModel):
     status: Optional[str]  # e.g., "draft", "published"
     schedule_time: Optional[datetime]
 
+
 class CampaignAnalytics(BaseModel):
     campaign_id: str
     metrics: Dict[str, int]  # Metrics related to campaign performance
+
 
 class CampaignInsights(BaseModel):
     campaign_id: str
     insights: Dict[str, str]  # Detailed insights and metrics
 
+
 class ExportCampaignData(BaseModel):
     campaign_id: str
     format: str  # e.g., "CSV", "JSON"
 
+
 class ImportCampaignData(BaseModel):
     data: Dict  # The data to import
+
+
+class Consent(BaseModel):
+    user_id: str
+    consent_type: str
+    status: str  # e.g., "granted", "revoked"
+    timestamp: datetime
+    details: Optional[Dict] = None
+
+
+class ConsentArtifact(BaseModel):
+    consent_id: str
+    artifact_data: Dict
+
+
+class ConsentHistory(BaseModel):
+    user_id: str
+    history: List[Dict]  # List of consent records or changes
+
+
+class ConsentInsights(BaseModel):
+    user_id: str
+    insights: Dict  # Detailed insights on consent history
+
+
+class BulkUploadConsents(BaseModel):
+    consents: List[Consent]
+
+
+class ConsentReport(BaseModel):
+    user_id: str
+    report_data: Dict  # Detailed consent report data
+
+
+class ConsentCDC(BaseModel):
+    consent_id: str
+    change_type: str  # e.g., "created", "updated", "deleted"
+    change_timestamp: datetime
+    details: Dict
+
+
+class ConsentCDCInsights(BaseModel):
+    total_changes: int
+    changes_by_type: Dict[str, int]  # e.g., {"created": 10, "updated": 5, "deleted": 2}
+
+
+class ConsentCDCAudit(BaseModel):
+    audit_data: Dict  # Details of the audit findings
+
+
+class ReconsentRule(BaseModel):
+    rule_id: str
+    description: str
+    criteria: Dict  # Criteria for triggering reconsent
+    created_at: datetime
+    updated_at: datetime
+
+
+class ReconsentDetails(BaseModel):
+    rule_id: str
+    status: str  # e.g., "pending", "completed", "failed"
+    request_timestamp: datetime
+    response_timestamp: datetime
+
+
+class ReconsentInsights(BaseModel):
+    total_requests: int
+    total_responses: int
+    compliance_rate: float
+
+
+class ReconsentAudit(BaseModel):
+    audit_data: Dict
+
+
+class ProgressiveConsentRule(BaseModel):
+    rule_id: str
+    description: str
+    criteria: Dict  # Criteria for triggering progressive consent
+    created_at: datetime
+    updated_at: datetime
+
+
+class ProgressiveConsentDetails(BaseModel):
+    rule_id: str
+    status: str  # e.g., "pending", "accepted", "rejected"
+    request_timestamp: datetime
+    response_timestamp: datetime
+
+
+class ProgressiveConsentInsights(BaseModel):
+    total_requests: int
+    total_acceptances: int
+    total_rejections: int
+    acceptance_rate: float
+
+
+class ProgressiveConsentAudit(BaseModel):
+    audit_data: Dict  # Details of the audit findings
+
+
+class DataPrincipal(BaseModel):
+    id: str
+    name: str
+    email: str
+
+
+class UserPreference(BaseModel):
+    user_id: str
+    preferences: Dict[
+        str, bool
+    ]  # Example: {"newsletter": True, "notifications": False}
+    consents: Dict[str, bool]  # Example: {"data_sharing": True, "marketing": False}
+    updated_at: datetime
+
+
+class PreferenceHistory(BaseModel):
+    user_id: str
+    changes: List[Dict[str, any]]  # List of changes with timestamps
+
+
+class ConsentArtifact(BaseModel):
+    artifact_id: str
+    content: str  # Example: JSON or text representation of the artifact
+
+
+class PreferenceDataExport(BaseModel):
+    user_id: str
+    export_format: str  # CSV, JSON, etc.
+    data: List[Dict[str, any]]
